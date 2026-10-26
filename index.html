@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GodavariGo - Direct Farm-to-Door Delivery in West Godavari</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandGreen: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        },
+                        brandEarth: {
+                            600: '#ca8a04',
+                            700: '#a16207',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased font-sans selection:bg-brandGreen-500 selection:text-white">
+
+    <!-- Notification Toast (Replaces alert) -->
+    <div id="toast" class="fixed top-5 right-5 z-50 transform -translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700">
+        <span id="toast-icon" class="text-brandGreen-400 font-bold text-lg">✓</span>
+        <span id="toast-message" class="text-sm font-medium">Notification message</span>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-xl bg-brandGreen-600 flex items-center justify-center text-white font-black text-xl shadow-md shadow-brandGreen-500/20">
+                    G
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight text-slate-900">Godavari<span class="text-brandGreen-600">Go</span></span>
+                    <span class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold -mt-1">West Godavari Delta</span>
+                </div>
+            </div>
+
+            <!-- Town Selector Dropdown -->
+            <div class="hidden sm:flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+                <svg class="w-4 h-4 text-brandGreen-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <select id="townSelector" onchange="updateTown(this.value)" class="bg-transparent text-xs font-bold text-slate-700 focus:outline-none cursor-pointer">
+                    <option value="Bhimavaram">Bhimavaram</option>
+                    <option value="Eluru">Eluru</option>
+                    <option value="Tanuku">Tanuku</option>
+                    <option value="Palakollu">Palakollu</option>
+                    <option value="Tadepalligudem">Tadepalligudem</option>
+                    <option value="Narsapuram">Narsapuram</option>
+                </select>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600">
+                <a href="#howItWorks" class="hover:text-brandGreen-600 transition-colors">How It Works</a>
+                <a href="#farmerDirect" class="hover:text-brandGreen-600 transition-colors">For Farmers</a>
+                <a href="#produce" class="hover:text-brandGreen-600 transition-colors">Fresh Harvest</a>
+                <a href="#impact" class="hover:text-brandGreen-600 transition-colors">Impact</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <a href="#farmerDirect" class="bg-brandGreen-50 text-brandGreen-700 hover:bg-brandGreen-100 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all border border-brandGreen-200">
+                    Farmer Portal
+                </a>
+                <a href="#produce" class="bg-brandGreen-600 hover:bg-brandGreen-700 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-brandGreen-600/30 transition-all">
+                    Order Fresh
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Town Selector Bar -->
+    <div class="sm:hidden bg-slate-900 text-white px-4 py-2 text-xs flex items-center justify-between">
+        <span class="flex items-center gap-1.5 text-slate-300">
+            <svg class="w-3.5 h-3.5 text-brandGreen-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+            Active Hub:
+        </span>
+        <select onchange="updateTown(this.value)" class="bg-slate-800 text-brandGreen-300 font-bold px-2 py-1 rounded border border-slate-700 text-xs">
+            <option value="Bhimavaram">Bhimavaram</option>
+            <option value="Eluru">Eluru</option>
+            <option value="Tanuku">Tanuku</option>
+            <option value="Palakollu">Palakollu</option>
+            <option value="Tadepalligudem">Tadepalligudem</option>
+            <option value="Narsapuram">Narsapuram</option>
+        </select>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden pt-8 pb-16 lg:pt-20 lg:pb-28 bg-gradient-to-b from-brandGreen-50/50 to-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Content -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 bg-brandGreen-100 text-brandGreen-800 px-3 py-1 rounded-full text-xs font-bold tracking-wide">
+                        <span class="w-2 h-2 rounded-full bg-brandGreen-600 animate-pulse"></span>
+                        Direct Farm-to-Doorstep Initiative in West Godavari
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
+                        Fresh from Godavari Farms, Delivered <span class="text-brandGreen-600 underline decoration-brandGreen-300 decoration-wavy decoration-2">Directly to You</span>.
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        Empowering local farmers in West Godavari by cutting out middlemen. Get pesticide-free vegetables harvested the same morning delivered straight to your doorstep, or book fast local courier services in under 60 minutes.
+                    </p>
+
+                    <!-- Dual Action Buttons -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#produce" class="w-full sm:w-auto bg-brandGreen-600 hover:bg-brandGreen-700 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-brandGreen-600/30 transition-all flex items-center justify-center gap-2 text-base group">
+                            🛒 Shop Farm-Fresh Vegetables
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
+                        <a href="#farmerDirect" class="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-800 font-bold px-8 py-4 rounded-2xl border-2 border-slate-200 hover:border-brandGreen-600 transition-all flex items-center justify-center gap-2 text-base">
+                            🌾 Register as Farmer Vendor
+                        </a>
+                    </div>
+
+                    <!-- Trust Stats -->
+                    <div class="grid grid-cols-3 gap-4 pt-8 border-t border-slate-200 max-w-lg mx-auto lg:mx-0">
+                        <div>
+                            <div class="text-2xl font-extrabold text-slate-900">450+</div>
+                        <div class="text-xs text-slate-500 font-medium">Local Farmers</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-extrabold text-slate-900">6 Towns</div>
+                            <div class="text-xs text-slate-500 font-medium">Fully Covered</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-extrabold text-slate-900">&lt; 6 hrs</div>
+                            <div class="text-xs text-slate-500 font-medium">Harvest to Home</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Visual (Split Screen Photo Concept) -->
+                <div class="lg:col-span-5 relative">
+                    <div class="relative mx-auto max-w-md lg:max-w-none">
+                        <!-- Decorative Backdrop blob -->
+                        <div class="absolute -inset-2 bg-gradient-to-r from-brandGreen-600 to-brandEarth-600 rounded-3xl blur-xl opacity-20 animate-pulse"></div>
+                        
+                        <div class="relative bg-white p-3 rounded-3xl shadow-2xl border border-slate-100 overflow-hidden">
+                            <div class="relative h-80 sm:h-96 rounded-2xl overflow-hidden bg-slate-100">
+                                <img src="https://placehold.co/600x700/16a34a/ffffff?text=Godavari+Delta+Fresh+Vegetables" alt="Godavari Delta Farm Produce" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent flex flex-col justify-end p-6 text-white">
+                                    <span class="bg-brandGreen-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider w-max mb-2">Harvested Today in Palakollu</span>
+                                    <h3 class="text-xl font-bold">Organic Tomatoes & Leafy Greens</h3>
+                                    <p class="text-xs text-slate-200 mt-1">Directly sourced from Sri. V. Raju's farm in Achanta mandal.</p>
+                                </div>
+                            </div>
+
+                            <!-- Floating badge -->
+                            <div class="absolute top-6 right-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg border border-slate-200 flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-brandGreen-500 animate-ping"></div>
+                                <div>
+                                    <div class="text-[10px] uppercase font-bold text-slate-400">Status</div>
+                                    <div class="text-xs font-bold text-slate-800">Dispatching Live Now</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Real World Problem & Solution Section -->
+    <section class="py-16 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-brandGreen-400 text-xs font-extrabold uppercase tracking-widest bg-brandGreen-950 px-3 py-1 rounded-full border border-brandGreen-800">Why GodavariGo Exists</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold mt-4 tracking-tight">Solving West Godavari's Supply Chain Gap</h2>
+                <p class="text-slate-400 mt-3 text-sm sm:text-base">We bridge the gap between hardworking rural farmers and urban families who deserve honest prices and absolute freshness.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- For Farmers -->
+                <div class="bg-slate-800/80 border border-slate-700/60 p-8 rounded-3xl relative overflow-hidden group hover:border-brandGreen-500 transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-brandGreen-500/10 text-brandGreen-400 flex items-center justify-center font-bold text-xl mb-6">
+                        🌾
+                    </div>
+                    <h3 class="text-xl font-bold text-white">For Local Farmers & Small Vendors</h3>
+                    <p class="text-slate-300 text-sm mt-3 leading-relaxed">
+                        Traditional mandis and middlemen often eat up to 40% of a farmer's earnings while produce sits unsold. GodavariGo gives farmers direct access to urban consumers in Bhimavaram, Eluru, and Tanuku with assured fair pricing and guaranteed doorstep pickup.
+                    </p>
+                    <ul class="mt-6 space-y-2.5 text-xs text-slate-300 font-medium">
+                        <li class="flex items-center gap-2">✓ Zero commission trap — keep up to 90% of retail price</li>
+                        <li class="flex items-center gap-2">✓ Direct farm-gate pickup by GodavariGo logistics</li>
+                        <li class="flex items-center gap-2">✓ Instant digital payout upon successful delivery</li>
+                    </ul>
+                </div>
+
+                <!-- For Customers -->
+                <div class="bg-slate-800/80 border border-slate-700/60 p-8 rounded-3xl relative overflow-hidden group hover:border-brandGreen-500 transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-brandGreen-500/10 text-brandGreen-400 flex items-center justify-center font-bold text-xl mb-6">
+                        🏡
+                    </div>
+                    <h3 class="text-xl font-bold text-white">For Urban & Semi-Urban Residents</h3>
+                    <p class="text-slate-300 text-sm mt-3 leading-relaxed">
+                        Finding genuinely fresh, pesticide-free vegetables and Godavari river fish without visiting crowded morning markets can be exhausting. We deliver morning-harvested produce right to your apartment or house in pristine condition.
+                    </p>
+                    <ul class="mt-6 space-y-2.5 text-xs text-slate-300 font-medium">
+                        <li class="flex items-center gap-2">✓ 100% Pesticide-free verified local delta produce</li>
+                        <li class="flex items-center gap-2">✓ Express 60-minute intra-town courier and errands</li>
+                        <li class="flex items-center gap-2">✓ Transparent pricing with zero hidden delivery surge</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="howItWorks" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-brandGreen-600 text-xs font-bold uppercase tracking-widest bg-brandGreen-50 px-3 py-1 rounded-full">Simple 3-Step Process</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 mt-3">How GodavariGo Works for Everyone</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Step 1 -->
+                <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 text-center relative">
+                    <div class="w-12 h-12 rounded-full bg-brandGreen-600 text-white font-extrabold text-lg flex items-center justify-center mx-auto mb-6 shadow-md">1</div>
+                    <h3 class="text-lg font-bold text-slate-900">Choose or List Produce</h3>
+                    <p class="text-slate-600 text-xs mt-2 leading-relaxed">
+                        Farmers list daily harvested vegetables on our app, while customers browse fresh categories right from their smartphone.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 text-center relative">
+                    <div class="w-12 h-12 rounded-full bg-brandGreen-600 text-white font-extrabold text-lg flex items-center justify-center mx-auto mb-6 shadow-md">2</div>
+                    <h3 class="text-lg font-bold text-slate-900">Farm-Gate Pickup</h3>
+                    <p class="text-slate-600 text-xs mt-2 leading-relaxed">
+                        Our local delivery partners collect sorted produce directly from village mandals in West Godavari within hours of harvest.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 text-center relative">
+                    <div class="w-12 h-12 rounded-full bg-brandGreen-600 text-white font-extrabold text-lg flex items-center justify-center mx-auto mb-6 shadow-md">3</div>
+                    <h3 class="text-lg font-bold text-slate-900">Doorstep Delivery</h3>
+                    <p class="text-slate-600 text-xs mt-2 leading-relaxed">
+                        Fresh vegetables arrive at the customer's doorstep with live tracking and secure UPI payment options.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fresh Harvest Catalog (Farmer to Customer Showcase) -->
+    <section id="produce" class="py-20 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <span class="text-brandGreen-600 text-xs font-bold uppercase tracking-widest bg-brandGreen-100 px-3 py-1 rounded-full">Live Harvest Catalog</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 mt-3">Directly From West Godavari Farms</h2>
+                </div>
+                <div class="mt-4 md:mt-0 flex gap-2">
+                    <button onclick="filterProduce('all')" class="px-4 py-2 rounded-xl text-xs font-bold bg-brandGreen-600 text-white shadow-sm">All Produce</button>
+                    <button onclick="filterProduce('vegetables')" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-100">Vegetables</button>
+                    <button onclick="filterProduce('leafy')" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-100">Leafy Greens</button>
+                </div>
+            </div>
+
+            <!-- Produce Grid -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6" id="produceGrid">
+                
+                <!-- Item 1 -->
+                <div class="produce-card bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="vegetables">
+                    <div>
+                        <div class="relative h-48 rounded-2xl overflow-hidden bg-slate-100 mb-4">
+                            <img src="https://placehold.co/400x300/e2e8f0/475569?text=Country+Tomatoes" alt="Country Tomatoes" class="w-100 h-full w-full object-cover">
+                            <span class="absolute top-3 left-3 bg-brandGreen-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Harvested 4h ago</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-bold uppercase">Tanuku Mandal • Farmer Subba Rao</div>
+                        <h3 class="text-base font-bold text-slate-900 mt-1">Natu Tomato (Country Red)</h3>
+                        <p class="text-xs text-slate-500 mt-1">Grown organically in fertile delta silt soil.</p>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-100">
+                        <div>
+                            <span class="text-xs text-slate-400 line-through">₹45/kg</span>
+                            <div class="text-lg font-black text-brandGreen-600">₹32 <span class="text-xs font-medium text-slate-500">/ kg</span></div>
+                        </div>
+                        <button onclick="addToCart('Country Tomatoes', 32)" class="bg-brandGreen-50 hover:bg-brandGreen-600 hover:text-white text-brandGreen-700 p-2.5 rounded-xl transition-all font-bold text-xs flex items-center gap-1.5">
+                            + Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="produce-card bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="vegetables">
+                    <div>
+                        <div class="relative h-48 rounded-2xl overflow-hidden bg-slate-100 mb-4">
+                            <img src="https://placehold.co/400x300/e2e8f0/475569?text=Bhimavaram+Bhendi" alt="Lady Finger" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-brandGreen-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Harvested Today</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-bold uppercase">Bhimavaram • Farmer Venkataramana</div>
+                        <h3 class="text-base font-bold text-slate-900 mt-1">Fresh Tender Bhendi (Okra)</h3>
+                        <p class="text-xs text-slate-500 mt-1">Crisp, tender, and hand-picked at dawn.</p>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-100">
+                        <div>
+                            <span class="text-xs text-slate-400 line-through">₹40/kg</span>
+                            <div class="text-lg font-black text-brandGreen-600">₹28 <span class="text-xs font-medium text-slate-500">/ kg</span></div>
+                        </div>
+                        <button onclick="addToCart('Tender Bhendi', 28)" class="bg-brandGreen-50 hover:bg-brandGreen-600 hover:text-white text-brandGreen-700 p-2.5 rounded-xl transition-all font-bold text-xs flex items-center gap-1.5">
+                            + Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="produce-card bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="leafy">
+                    <div>
+                        <div class="relative h-48 rounded-2xl overflow-hidden bg-slate-100 mb-4">
+                            <img src="https://placehold.co/400x300/e2e8f0/475569?text=Palakollu+Palakura" alt="Spinach" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-brandGreen-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Fresh Batch</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-bold uppercase">Palakollu • Farmer Mangamma</div>
+                        <h3 class="text-base font-bold text-slate-900 mt-1">Organic Palakura (Spinach)</h3>
+                        <p class="text-xs text-slate-500 mt-1">Lush green leaves grown without synthetic urea.</p>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-100">
+                        <div>
+                            <span class="text-xs text-slate-400 line-through">₹20/bunch</span>
+                            <div class="text-lg font-black text-brandGreen-600">₹14 <span class="text-xs font-medium text-slate-500">/ bunch</span></div>
+                        </div>
+                        <button onclick="addToCart('Organic Palakura', 14)" class="bg-brandGreen-50 hover:bg-brandGreen-600 hover:text-white text-brandGreen-700 p-2.5 rounded-xl transition-all font-bold text-xs flex items-center gap-1.5">
+                            + Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="produce-card bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="vegetables">
+                    <div>
+                        <div class="relative h-48 rounded-2xl overflow-hidden bg-slate-100 mb-4">
+                            <img src="https://placehold.co/400x300/e2e8f0/475569?text=Eluru+Brinjal" alt="Brinjal" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-brandGreen-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Harvested Today</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-bold uppercase">Eluru Rural • Farmer Satyanarayana</div>
+                        <h3 class="text-base font-bold text-slate-900 mt-1">Purple Vankaya (Brinjal)</h3>
+                        <p class="text-xs text-slate-500 mt-1">Perfect for traditional Godavari Vankaya Pulusu.</p>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-100">
+                        <div>
+                            <span class="text-xs text-slate-400 line-through">₹50/kg</span>
+                            <div class="text-lg font-black text-brandGreen-600">₹36 <span class="text-xs font-medium text-slate-500">/ kg</span></div>
+                        </div>
+                        <button onclick="addToCart('Purple Vankaya', 36)" class="bg-brandGreen-50 hover:bg-brandGreen-600 hover:text-white text-brandGreen-700 p-2.5 rounded-xl transition-all font-bold text-xs flex items-center gap-1.5">
+                            + Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Farmer Onboarding & Direct Order Form Mockup -->
+    <section id="farmerDirect" class="py-20 bg-white border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-br from-brandGreen-900 to-slate-900 rounded-3xl p-8 sm:p-12 lg:p-16 text-white relative overflow-hidden shadow-2xl">
+                <!-- Background decorative shapes -->
+                <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-brandGreen-600/20 rounded-full blur-3xl"></div>
+
+                <div class="grid lg:grid-cols-12 gap-12 items-center relative z-10">
+                    <div class="lg:col-span-6 space-y-6">
+                        <span class="bg-brandGreen-800 text-brandGreen-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">For Farmers & Growers</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Are You a Farmer in West Godavari? List Your Produce Today.</h2>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                            Join over 450 local farmers who are selling directly to households in Eluru, Bhimavaram, Tanuku, and Palakollu. Get transparent daily market prices, guaranteed collection, and zero middleman deductions.
+                        </p>
+                        <div class="space-y-4 pt-2">
+                            <div class="flex items-center gap-3 text-sm font-medium">
+                                <div class="w-6 h-6 rounded-full bg-brandGreen-500/20 text-brandGreen-400 flex items-center justify-center font-bold text-xs">✓</div>
+                                Free onboarding and daily WhatsApp price broadcasts
+                            </div>
+                            <div class="flex items-center gap-3 text-sm font-medium">
+                                <div class="w-6 h-6 rounded-full bg-brandGreen-500/20 text-brandGreen-400 flex items-center justify-center font-bold text-xs">✓</div>
+                                Direct bank transfer or UPI within 2 hours of delivery
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Form Mockup -->
+                    <div class="lg:col-span-6 bg-white text-slate-800 p-6 sm:p-8 rounded-3xl shadow-2xl border border-slate-100">
+                        <h3 class="text-xl font-extrabold text-slate-900">Farmer Quick Registration</h3>
+                        <p class="text-xs text-slate-500 mt-1">Fill in your details to connect with our local procurement coordinator.</p>
+
+                        <form id="farmerForm" onsubmit="handleFarmerSubmit(event)" class="space-y-4 mt-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Farmer Full Name</label>
+                                <input type="text" id="farmerName" required placeholder="e.g., K. Satyanarayana" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brandGreen-600">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mobile Number</label>
+                                    <input type="tel" id="farmerPhone" required placeholder="9876543210" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brandGreen-600">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mandal / Town</label>
+                                    <select id="farmerTown" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brandGreen-600 cursor-pointer">
+                                        <option value="Bhimavaram">Bhimavaram</option>
+                                        <option value="Eluru">Eluru</option>
+                                        <option value="Tanuku">Tanuku</option>
+                                        <option value="Palakollu">Palakollu</option>
+                                        <option value="Tadepalligudem">Tadepalligudem</option>
+                                        <option value="Achanta">Achanta</option>
+                                        <option value="Narsapuram">Narsapuram</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Main Crop / Produce Available</label>
+                                <input type="text" id="farmerCrop" required placeholder="e.g., Tomatoes, Brinjals, Drumsticks" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brandGreen-600">
+                            </div>
+
+                            <button type="submit" class="w-full bg-brandGreen-600 hover:bg-brandGreen-700 text-white font-bold py-3.5 rounded-xl shadow-md shadow-brandGreen-600/30 transition-all text-sm">
+                                Submit Farmer Application
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 border-b border-slate-800 pb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-brandGreen-600 flex items-center justify-center text-white font-black text-base">G</div>
+                    <span class="text-lg font-bold">GodavariGo</span>
+                </div>
+                <p class="text-xs text-slate-400 text-center md:text-left">
+                    Proudly built to uplift farmers and connect local communities across West Godavari, Andhra Pradesh.
+                </p>
+                <div class="flex items-center gap-4 text-xs font-medium text-slate-300">
+                    <span class="bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">🔒 Secure UPI & COD</span>
+                    <span class="bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">🌱 100% Farm Fresh</span>
+                </div>
+            </div>
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+                <p>© 2026 GodavariGo Technologies. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-slate-300 transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-slate-300 transition-colors">Farmer Terms</a>
+                    <a href="#" class="hover:text-slate-300 transition-colors">Support Helpline</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Interactions -->
+    <script>
+        // Custom Toast Notification (Replaces alert)
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMessage.textContent = message;
+            toastIcon.textContent = isSuccess ? '✓' : 'ℹ';
+            
+            toast.classList.remove('-translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        // Town Selector Handler
+        function updateTown(townName) {
+            showToast(`Active delivery hub updated to ${townName}, West Godavari.`);
+        }
+
+        // Produce Filter
+        function filterProduce(category) {
+            const cards = document.querySelectorAll('.produce-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            showToast(`Filtered produce category: ${category}`);
+        }
+
+        // Add to Cart Simulation
+        function addToCart(itemName, price) {
+            showToast(`Added ${itemName} (₹${price}) to your fresh produce bag!`);
+        }
+
+        // Farmer Form Submission
+        function handleFarmerSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('farmerName').value;
+            const town = document.getElementById('farmerTown').value;
+            
+            showToast(`Thank you, ${name}! Your registration for ${town} hub has been received. Our coordinator will call you shortly.`);
+            document.getElementById('farmerForm').reset();
+        }
+    </script>
+</body>
+</html>
